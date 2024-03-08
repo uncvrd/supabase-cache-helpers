@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react"
 import Head from "next/head"
-import { useQuery } from "@supabase-cache-helpers/postgrest-react-query"
+import {
+  useDeleteMutation,
+  useQuery,
+} from "@supabase-cache-helpers/postgrest-react-query"
 import { useSupabaseClient } from "@supabase/auth-helpers-react"
 import { z } from "zod"
 
@@ -21,6 +24,8 @@ import { Button } from "@/components/ui/button"
 
 export default function UseInfiniteScrollQueryPage() {
   const supabase = useSupabaseClient<Database>()
+  // I lose typesaftey here...
+  const {} = useDeleteMutation(supabase.from("contact"), ["id"])
   const { data: contacts } = useQuery(
     supabase
       .from("contact")
@@ -77,7 +82,7 @@ export default function UseInfiniteScrollQueryPage() {
         </div>
         <ul role="list" className="divide-y divide-gray-200">
           {(contacts ?? []).map((contact) => (
-            <li key={contact.id} className="py-4 px-2">
+            <li key={contact.id} className="px-2 py-4">
               <div className="flex items-center space-x-4">
                 <Avatar>
                   <AvatarImage src={null} alt={contact.username} />
@@ -85,7 +90,7 @@ export default function UseInfiniteScrollQueryPage() {
                     {contact.username.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="min-w-0 flex-1">
+                <div className="flex-1 min-w-0">
                   <Small>{contact.username}</Small>
                   <Subtle>{contact.continent}</Subtle>
                 </div>
